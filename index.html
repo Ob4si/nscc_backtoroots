@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NSCC Back to the Roots</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ultra&family=Karla:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: a night-to-sunrise walk into the village. Tribal leaves frame both edges and part as you scroll;
+   pinned scenes (logo, village strip) alternate with drum interludes. Deliberately single dark theme. */
+:root{
+  --soil:#140e09;      /* night ground */
+  --bark:#2a1c12;      /* wood / card ground */
+  --forest:#1c3a26;    /* deep, non-neon green for the logo field */
+  --leaf1:#244a31; --leaf2:#2f5e3c; --leaf3:#3d6b3f;
+  --ochre:#d99a3d;     /* firelight accent */
+  --clay:#b4552f;      /* red earth */
+  --cream:#f0e2c6;     /* text */
+  --dim:#a8977c;
+  --display:"Ultra","Rockwell","Georgia",serif;
+  --body:"Karla","Helvetica Neue",Arial,sans-serif;
+  --p:0;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--soil);color:var(--cream);font-family:var(--body);font-size:17px;line-height:1.6;overflow-x:hidden}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.02;text-wrap:balance;margin:0}
+.eyebrow{font-size:.75rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ochre);font-weight:700}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1120px;margin:0 auto;position:relative;z-index:3}
+
+/* sky: sunrise climbs as you scroll */
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+   radial-gradient(ellipse 70% 55% at 50% calc(115% - var(--p)*55%), rgb(217 154 61 / calc(.08 + var(--p)*.38)), transparent 70%),
+   radial-gradient(ellipse 90% 70% at 50% 120%, rgb(180 85 47 / calc(.05 + var(--p)*.25)), transparent 70%),
+   linear-gradient(180deg, var(--soil), #0f1a12 60%, var(--soil));}
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.07;
+  background-image:repeating-linear-gradient(45deg,var(--cream) 0 1px,transparent 1px 7px);}
+
+/* leaves */
+.frond{position:fixed;top:0;bottom:0;width:0;z-index:1;pointer-events:none}
+.frond.l{left:0}.frond.r{right:0}
+.frond svg{position:absolute;overflow:visible;transform-origin:50% 96%;will-change:transform}
+.frond.l svg{left:-70px}.frond.r svg{right:-70px}
+
+/* top bar */
+.bar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;
+  padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));
+  background:linear-gradient(var(--soil),transparent);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase}
+.bar b{font-family:var(--display);font-weight:400;letter-spacing:.06em;font-size:1rem}
+.chip{border:1px solid var(--ochre);color:var(--ochre);border-radius:99px;padding:3px 10px;font-weight:700}
+.prog{position:fixed;left:0;top:0;height:3px;width:100%;transform-origin:0 0;transform:scaleX(var(--p));background:repeating-linear-gradient(90deg,var(--ochre) 0 10px,var(--clay) 10px 14px);z-index:21}
+
+/* hero */
+#hero{height:210vh;position:relative}
+.pin{position:sticky;top:0;height:100vh;height:100svh;display:grid;place-items:center;overflow:hidden;z-index:3}
+.hero-in{display:grid;justify-items:center;gap:18px;text-align:center;padding:80px 16px 40px}
+.logo{position:relative;width:min(300px,66vw);aspect-ratio:1;max-width:100%;will-change:transform}
+.logo .disc{position:absolute;inset:14%;border-radius:50%;background:radial-gradient(circle at 40% 35%,#24492f,var(--forest) 70%);
+  border:3px solid var(--ochre);box-shadow:0 0 0 6px var(--soil),0 0 0 8px var(--clay),0 20px 60px rgb(0 0 0/.5);display:grid;place-items:center}
+.logo .disc span{font-family:var(--display);font-size:clamp(2.2rem,9vw,3.6rem);letter-spacing:.04em;color:var(--cream)}
+.logo .ringtxt{position:absolute;inset:0;width:100%;height:100%;will-change:transform}
+.logo .ringtxt text{font-family:var(--body);font-weight:700;font-size:9.5px;letter-spacing:3.2px;fill:var(--ochre);text-transform:uppercase}
+.logo-note{font-size:.72rem;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;border:1px dashed var(--dim);padding:2px 10px;border-radius:99px}
+.hero-in h1{font-size:clamp(2.6rem,9vw,6.2rem);color:var(--cream);text-shadow:0 4px 0 var(--clay)}
+.hero-in .sub{font-family:var(--display);color:var(--ochre);font-size:clamp(1.1rem,3.4vw,1.7rem);letter-spacing:.04em}
+.cue{margin-top:8px;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);display:flex;flex-direction:column;align-items:center;gap:6px}
+.cue i{width:2px;height:34px;background:linear-gradient(var(--ochre),transparent);animation:drip 1.8s infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* zigzag tribal band */
+.band{height:18px;background:
+  linear-gradient(135deg,var(--ochre) 25%,transparent 25%) -9px 0/18px 18px,
+  linear-gradient(225deg,var(--ochre) 25%,transparent 25%) -9px 0/18px 18px,
+  linear-gradient(315deg,var(--clay) 25%,transparent 25%) 0 0/18px 18px,
+  linear-gradient(45deg,var(--clay) 25%,var(--bark) 25%) 0 0/18px 18px;
+  position:relative;z-index:3;opacity:.9}
+
+/* meaning */
+#meaning{padding-block:120px 80px}
+.lede{font-family:var(--display);font-size:clamp(1.5rem,4vw,2.6rem);line-height:1.22;max-width:22ch;margin:20px 0 0}
+.lede .w{color:rgb(240 226 198/.28);transition:color .25s}
+.lede .w.on{color:var(--cream)}
+.lede .w.hl.on{color:var(--ochre)}
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:18px;margin-top:64px}
+.pillar{border-top:2px solid var(--ochre);padding-top:14px}
+.pillar h3{font-size:1.15rem;color:var(--ochre);margin-bottom:6px;letter-spacing:.02em}
+.pillar p{margin:0;color:var(--dim);font-size:.98rem}
+
+/* drums */
+#drums{padding-block:90px;position:relative;z-index:3}
+.drum-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:20px}
+.drum-head h2{font-size:clamp(2rem,6vw,3.6rem)}
+.drum-head p{max-width:40ch;margin:0;color:var(--dim)}
+.drums{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+.drum{appearance:none;background:var(--bark);border:1px solid #3d2a1b;border-radius:18px;color:var(--cream);font:inherit;cursor:pointer;
+  padding:26px 14px 18px;display:grid;justify-items:center;gap:10px;text-align:center;position:relative;overflow:hidden}
+.drum:focus-visible,.btn:focus-visible{outline:3px solid var(--ochre);outline-offset:3px}
+.drum svg{width:min(140px,100%);height:auto;transition:transform .12s}
+.drum.hit svg{transform:scale(.9) rotate(-3deg)}
+.drum::after{content:"";position:absolute;left:50%;top:40%;width:20px;height:20px;border-radius:50%;border:2px solid var(--ochre);transform:translate(-50%,-50%) scale(0);opacity:0}
+.drum.hit::after{animation:ring .6s ease-out}
+@keyframes ring{0%{transform:translate(-50%,-50%) scale(1);opacity:.9}100%{transform:translate(-50%,-50%) scale(14);opacity:0}}
+.drum b{font-family:var(--display);font-weight:400;font-size:1.3rem}
+.drum small{color:var(--dim);font-size:.85rem;line-height:1.4}
+.drums.pulse .drum svg{animation:thump .9s ease-in-out 3}
+.drums.pulse .drum:nth-child(2) svg{animation-delay:.15s}.drums.pulse .drum:nth-child(3) svg{animation-delay:.3s}
+@keyframes thump{0%,100%{transform:none}30%{transform:scale(.92)}}
+.rhythm{margin-top:24px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{appearance:none;font:inherit;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.82rem;border:2px solid var(--ochre);
+  background:var(--ochre);color:var(--soil);border-radius:99px;padding:10px 20px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ochre)}
+.rhythm span{color:var(--dim);font-size:.9rem}
+
+/* talking-drum divider */
+.talk{position:relative;z-index:3;display:flex;align-items:center;gap:14px;padding-block:30px}
+.talk svg.wave{flex:1;height:70px;min-width:0}
+.talk svg.mini{width:46px;height:68px;flex:none}
+.talk .lbl{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+
+/* village horizontal strip */
+#village{height:340vh;position:relative;z-index:3}
+#village .pin{display:block;place-items:initial}
+.vhead{padding-top:calc(90px + env(safe-area-inset-top,0px))}
+.vhead h2{font-size:clamp(2rem,6vw,3.6rem)}
+.vhead p{color:var(--dim);margin:8px 0 0;max-width:46ch}
+.track{display:flex;gap:20px;margin-top:34px;padding-left:max(16px,env(safe-area-inset-left,0px));will-change:transform;width:max-content}
+.card{width:min(300px,76vw);flex:none;background:var(--bark);border-radius:4px 40px 4px 40px;overflow:hidden;border:1px solid #3d2a1b}
+.card .art{height:150px;display:grid;place-items:center;font-family:var(--display);font-size:4.6rem;color:var(--soil);position:relative}
+.card .art::after{content:"";position:absolute;left:0;right:0;bottom:0;height:14px;background:
+  linear-gradient(135deg,var(--soil) 25%,transparent 25%) 0 0/14px 14px,linear-gradient(225deg,var(--soil) 25%,transparent 25%) 0 0/14px 14px}
+.card .txt{padding:16px 18px 22px}
+.card .tag{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ochre);font-weight:700}
+.card h3{font-size:1.45rem;margin:6px 0 6px}
+.card p{margin:0;color:var(--dim);font-size:.95rem;line-height:1.45}
+
+/* highlife */
+#highlife{padding-block:110px;position:relative;z-index:3}
+.hl-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.vinyl{width:min(420px,100%);aspect-ratio:1;max-width:100%;border-radius:50%;margin:0 auto;will-change:transform;
+  background:radial-gradient(circle,var(--clay) 0 17%,var(--soil) 17.5% 19%,transparent 19.5%),
+  repeating-radial-gradient(circle,#1a1410 0 2px,#0b0806 2px 4px);box-shadow:0 30px 70px rgb(0 0 0/.6);position:relative;display:grid;place-items:center}
+.vinyl span{font-family:var(--display);font-size:clamp(.8rem,2.6vw,1.05rem);color:var(--cream);text-align:center;line-height:1.1}
+.hl-copy h2{font-size:clamp(2.2rem,6vw,4rem);margin:10px 0 16px}
+.hl-copy p{color:var(--dim);max-width:44ch}
+.date{display:inline-flex;gap:10px;align-items:baseline;border:1px solid var(--ochre);border-radius:6px;padding:8px 14px;margin-top:10px}
+.date b{font-family:var(--display);font-weight:400;color:var(--ochre);font-size:1.3rem;font-variant-numeric:tabular-nums}
+.eq{display:flex;gap:5px;align-items:end;height:44px;margin-top:22px}
+.eq i{width:9px;background:var(--ochre);border-radius:2px 2px 0 0;height:20%;transition:height .12s}
+.eq i:nth-child(3n){background:var(--clay)}
+
+/* roots close */
+#roots{padding-block:120px 140px;text-align:center;position:relative;z-index:3}
+#roots h2{font-size:clamp(2.4rem,8vw,5.4rem)}
+.places{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 26px;margin:30px 0 18px;font-family:var(--display);font-size:clamp(1.3rem,4vw,2.2rem)}
+.places span:nth-child(odd){color:var(--ochre)}
+#roots p{max-width:48ch;margin:0 auto 30px;color:var(--dim)}
+.cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+/* tickets */
+#tickets{padding-block:100px 120px;position:relative;z-index:3}
+.tix-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;margin-top:40px;align-items:start}
+.tix-list{display:grid;gap:14px}
+.tix{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 18px;align-items:center;background:var(--bark);border:1px solid #3d2a1b;
+  border-left:10px solid var(--c);border-radius:6px 22px 6px 22px;padding:18px 20px;position:relative}
+.tix::before{content:"";position:absolute;right:150px;top:10px;bottom:10px;border-left:2px dashed #4a3424}
+.tix h3{font-size:1.35rem}
+.tix .inc{margin:4px 0 0;color:var(--dim);font-size:.92rem;line-height:1.45}
+.tix .badge{display:inline-block;margin-top:8px;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--soil);background:var(--c);padding:2px 8px;border-radius:99px}
+.tix .right{display:grid;justify-items:end;gap:8px;width:130px}
+.tix .price{font-family:var(--display);font-size:1.7rem;color:var(--ochre);font-variant-numeric:tabular-nums}
+.step{display:flex;align-items:center;border:1px solid var(--ochre);border-radius:99px;overflow:hidden}
+.step button{appearance:none;background:transparent;border:0;color:var(--ochre);font:700 1.1rem var(--body);width:34px;height:34px;cursor:pointer}
+.step button:hover{background:rgb(217 154 61/.15)}
+.step button:focus-visible{outline:2px solid var(--ochre);outline-offset:-2px}
+.step input{width:36px;text-align:center;background:transparent;border:0;color:var(--cream);font:700 1rem var(--body);font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.step input::-webkit-inner-spin-button{-webkit-appearance:none}
+.summary{background:var(--forest);border:2px solid var(--ochre);border-radius:18px;padding:22px;position:sticky;top:calc(70px + env(safe-area-inset-top,0px))}
+.summary ul{list-style:none;padding:0;margin:14px 0;display:grid;gap:8px}
+.summary li{display:flex;justify-content:space-between;gap:10px;font-variant-numeric:tabular-nums}
+.summary li.empty{color:var(--dim);font-size:.92rem}
+.total{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--ochre);padding-top:12px;margin-bottom:16px}
+.total b{font-family:var(--display);font-weight:400;font-size:2rem;color:var(--ochre);font-variant-numeric:tabular-nums}
+.summary .btn{width:100%}
+.summary .btn:disabled{opacity:.4;cursor:not-allowed}
+.summary .note{color:var(--dim);font-size:.85rem;margin:12px 0 0}
+@media (max-width:760px){
+  .tix-grid{grid-template-columns:1fr}
+  .summary{position:relative;top:auto}
+  .tix{grid-template-columns:1fr}.tix::before{display:none}
+  .tix .right{width:auto;grid-auto-flow:column;justify-content:space-between;justify-items:start;align-items:center}
+}
+footer{position:relative;z-index:3;text-align:center;padding-block:28px 40px;color:var(--dim);font-size:.85rem;border-top:1px solid #3d2a1b}
+
+@media (max-width:760px){
+  .hl-grid{grid-template-columns:1fr}
+  .drums{grid-template-columns:1fr;max-width:340px}
+  .drum{grid-template-columns:90px 1fr;justify-items:start;text-align:left;padding:14px;align-items:center}
+  .drum svg{width:80px;grid-row:span 2}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #hero{height:auto}#hero .pin{position:relative;height:auto;min-height:90vh}
+  #village{height:auto}#village .pin{position:relative;height:auto;overflow:visible}
+  .track{width:auto;overflow-x:auto;padding-bottom:20px}
+  .cue i,.drums.pulse .drum svg{animation:none}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="leafA" viewBox="-60 -160 120 320">
+      <path d="M0,-150 C58,-92 62,62 0,150 C-62,62 -58,-92 0,-150Z" fill="currentColor"/>
+      <path d="M0,-138 L0,150" style="stroke:var(--vein)" stroke-width="3" fill="none"/>
+      <g style="stroke:var(--vein)" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".85">
+        <path d="M-26,-78 L0,-98 L26,-78"/><path d="M-36,-40 L0,-66 L36,-40"/><path d="M-40,0 L0,-28 L40,0"/>
+        <path d="M-38,40 L0,12 L38,40"/><path d="M-30,80 L0,54 L30,80"/><path d="M-16,116 L0,98 L16,116"/>
+      </g>
+      <g style="fill:var(--vein)" opacity=".7"><circle cx="-18" cy="-60" r="3"/><circle cx="18" cy="-60" r="3"/><circle cx="-22" cy="20" r="3"/><circle cx="22" cy="20" r="3"/><circle cx="-14" cy="96" r="3"/><circle cx="14" cy="96" r="3"/></g>
+    </symbol>
+    <symbol id="leafB" viewBox="-60 -160 120 320">
+      <path d="M0,-158 C30,-80 32,80 0,158 C-32,80 -30,-80 0,-158Z" fill="currentColor"/>
+      <polyline points="0,-140 9,-120 -9,-100 9,-80 -9,-60 9,-40 -9,-20 9,0 -9,20 9,40 -9,60 9,80 -9,100 9,120 0,140" style="stroke:var(--vein)" stroke-width="2.4" fill="none" stroke-linejoin="round"/>
+      <g style="stroke:var(--vein)" stroke-width="1.6" opacity=".6"><path d="M-18,-60 L-22,-20 M18,-60 L22,-20 M-20,30 L-22,70 M20,30 L22,70"/></g>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="sky"></div><div class="grain"></div>
+<div class="frond l" id="fl"></div><div class="frond r" id="fr"></div>
+<div class="prog"></div>
+<header class="bar"><b>NSCC 2026</b><span class="chip">Prototype · v1</span></header>
+
+<section id="hero">
+  <div class="pin">
+    <div class="hero-in">
+      <div class="logo" id="logo">
+        <svg class="ringtxt" id="ring" viewBox="0 0 200 200" aria-hidden="true">
+          <defs><path id="circ" d="M100,100 m-88,0 a88,88 0 1,1 176,0 a88,88 0 1,1 -176,0"/></defs>
+          <text><textPath href="#circ">Back to the roots · ancestral tribute · back to the roots · ancestral tribute ·</textPath></text>
+        </svg>
+        <div class="disc"><span>NSCC</span></div>
+      </div>
+      <span class="logo-note">Logo placeholder</span>
+      <p class="eyebrow">Nigerian Students Coalition Conference · SJSU × Stanford</p>
+      <h1>Back to the Roots</h1>
+      <p class="sub">An Ancestral Tribute</p>
+      <a class="cue" href="#meaning">Walk into the village<i></i></a>
+    </div>
+  </div>
+</section>
+
+<div class="band"></div>
+
+<section id="meaning">
+  <div class="wrap">
+    <p class="eyebrow">What the theme means</p>
+    <p class="lede" id="lede">Back to the Roots celebrates Nigerian heritage through village life, cultural traditions and the vibrancy of 1960s highlife. Through nostalgic imagery and storytelling we honor our ancestors, celebrate our history and reconnect with our roots.</p>
+    <div class="pillars">
+      <div class="pillar"><h3>Post-independence</h3><p>Nigeria in the 1960s: a new flag, new music, a country finding its voice.</p></div>
+      <div class="pillar"><h3>Reconnecting</h3><p>Returning to something many of us have lost touch with, abroad or at home.</p></div>
+      <div class="pillar"><h3>Village practice</h3><p>The cultural and the everyday: markets, compounds, ceremonies, chores.</p></div>
+      <div class="pillar"><h3>Roots travel</h3><p>Roots take hold wherever we are in the diaspora, in the village and in the city.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap talk" aria-hidden="true">
+  <svg class="mini" viewBox="0 0 120 180"><path d="M18,12 L102,12 L74,90 L102,168 L18,168 L46,90Z" fill="#7a4a2a"/><ellipse cx="60" cy="12" rx="42" ry="8" fill="#d9c09a"/><ellipse cx="60" cy="168" rx="42" ry="8" fill="#d9c09a"/><g stroke="#f0e2c6" stroke-width="1.6" opacity=".7"><path d="M26,14 L52,166 M44,14 L60,166 M60,14 L60,166 M76,14 L60,166 M94,14 L68,166"/></g></svg>
+  <svg class="wave" id="wave1" viewBox="0 0 600 70" preserveAspectRatio="none"><polyline fill="none" stroke="#d99a3d" stroke-width="2.5" points=""/></svg>
+  <span class="lbl">Scroll faster, the drum talks louder</span>
+</div>
+
+<section id="drums">
+  <div class="wrap">
+    <div class="drum-head">
+      <div><p class="eyebrow">Interlude</p><h2>Hear the village</h2></div>
+      <p>Tap a drum. Each one is a sound from home that would open a session, a game or a performance at the conference.</p>
+    </div>
+    <div class="drums" id="drumset">
+      <button class="drum" data-d="gangan" aria-label="Play the gángan, talking drum">
+        <svg viewBox="0 0 120 180"><path d="M18,12 L102,12 L74,90 L102,168 L18,168 L46,90Z" fill="#7a4a2a"/><path d="M46,90 L74,90 L66,96 L54,96Z" fill="#5a341c"/><ellipse cx="60" cy="12" rx="42" ry="8" fill="#e3cba4"/><ellipse cx="60" cy="168" rx="42" ry="8" fill="#e3cba4"/><g stroke="#f0e2c6" stroke-width="1.6" opacity=".75"><path d="M24,14 L54,166 M38,14 L57,166 M52,14 L59,166 M68,14 L61,166 M82,14 L63,166 M96,14 L66,166"/></g><path d="M18,40 L42,40 M78,40 L102,40" stroke="#d99a3d" stroke-width="3"/></svg>
+        <b>Gángan</b><small>Yoruba talking drum. Squeeze the strings and it speaks.</small>
+      </button>
+      <button class="drum" data-d="udu" aria-label="Play the udu, clay pot drum">
+        <svg viewBox="0 0 120 180"><rect x="44" y="18" width="32" height="34" rx="4" fill="#9c4a28"/><ellipse cx="60" cy="18" rx="18" ry="5" fill="#5a2a14"/><ellipse cx="60" cy="112" rx="52" ry="58" fill="#b4552f"/><circle cx="92" cy="96" r="11" fill="#3a1a0c"/><g stroke="#f0e2c6" stroke-width="2" fill="none" opacity=".6"><path d="M16,100 L30,88 L44,100 L58,88 L72,100"/><path d="M20,130 L34,142 L48,130 L62,142 L76,130 L90,142"/></g></svg>
+        <b>Ụdụ</b><small>Igbo clay pot. Strike the hole for a deep, watery note.</small>
+      </button>
+      <button class="drum" data-d="ekwe" aria-label="Play the ekwe, slit log drum">
+        <svg viewBox="0 0 120 180"><rect x="8" y="64" width="104" height="62" rx="28" fill="#6b4226"/><rect x="26" y="88" width="68" height="8" rx="4" fill="#2a1408"/><g fill="#d99a3d"><circle cx="20" cy="95" r="4"/><circle cx="100" cy="95" r="4"/></g><path d="M30,40 L58,82 M90,40 L66,82" stroke="#e3cba4" stroke-width="6" stroke-linecap="round"/><circle cx="30" cy="40" r="7" fill="#e3cba4"/><circle cx="90" cy="40" r="7" fill="#e3cba4"/><path d="M14,140 L106,140" stroke="#3d2a1b" stroke-width="6" stroke-linecap="round"/></svg>
+        <b>Ekwe</b><small>Carved slit log. The village messenger.</small>
+      </button>
+    </div>
+    <div class="rhythm">
+      <button class="btn" id="play">Play a rhythm</button>
+      <span id="rstatus">Sound starts only when you tap.</span>
+    </div>
+  </div>
+</section>
+
+<div class="band"></div>
+
+<section id="village">
+  <div class="pin">
+    <div class="wrap vhead">
+      <p class="eyebrow">The village, 1960s</p>
+      <h2>Scenes we grew up hearing about</h2>
+      <p>Keep scrolling. The road carries you through the images the theme is built from.</p>
+    </div>
+    <div class="track" id="track"></div>
+  </div>
+</section>
+
+<div class="wrap talk" aria-hidden="true">
+  <svg class="mini" viewBox="0 0 120 180"><ellipse cx="60" cy="112" rx="52" ry="58" fill="#b4552f"/><rect x="44" y="18" width="32" height="34" rx="4" fill="#9c4a28"/><circle cx="92" cy="96" r="11" fill="#3a1a0c"/></svg>
+  <svg class="wave" id="wave2" viewBox="0 0 600 70" preserveAspectRatio="none"><polyline fill="none" stroke="#b4552f" stroke-width="2.5" points=""/></svg>
+  <span class="lbl">Ụdụ keeps time</span>
+</div>
+
+<section id="highlife">
+  <div class="wrap hl-grid">
+    <div class="vinyl" id="vinyl"><span>HIGHLIFE<br>LAGOS<br>’60s</span></div>
+    <div class="hl-copy">
+      <p class="eyebrow">The soundtrack</p>
+      <h2>Highlife and the young nation</h2>
+      <p>Horns, palm-wine guitar and dance halls that stayed open late. Fela Kuti came up through this scene with highlife-jazz before Afrobeat, and the masked Lagbaja later carried the tradition forward. This section would hold the conference playlist and the party night details.</p>
+      <div class="date"><b>01.10.1960</b><span>Independence Day</span></div>
+      <div class="eq" id="eq"></div>
+    </div>
+  </div>
+</section>
+
+<div class="band"></div>
+
+<section id="roots">
+  <div class="wrap">
+    <p class="eyebrow">Ancestral tribute</p>
+    <h2>Roots grow where we are</h2>
+    <div class="places"><span>Village</span><span>City</span><span>Campus</span><span>Diaspora</span></div>
+    <p>From Lagos to the Bay Area, from the compound to the dorm room. Come honor the people who came before us, in traditional attire, with the drums and the dances that raised them.</p>
+    <div class="cta"><a class="btn" href="#tickets">Get your ticket</a><a class="btn ghost" href="#drums">Back to the drums</a></div>
+  </div>
+</section>
+
+<div class="band"></div>
+
+<section id="tickets">
+  <div class="wrap">
+    <div class="drum-head">
+      <div><p class="eyebrow">Tickets</p><h2>Take your seat in the village</h2></div>
+      <p>Pick your ticket and how many. Prices below are the planning numbers and may still change.</p>
+    </div>
+    <div class="tix-grid">
+      <div class="tix-list" id="tixlist"></div>
+      <aside class="summary" aria-live="polite">
+        <p class="eyebrow">Your order</p>
+        <ul id="lines"><li class="empty">No tickets yet. Add one to start.</li></ul>
+        <div class="total"><span>Total</span><b id="total">$0</b></div>
+        <button class="btn" id="checkout" disabled>Continue to payment</button>
+        <p class="note" id="paynote">Delegate caps apply per school.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">Hosted by the Nigerian Students Association at San José State University with Stanford · Prototype for theme review</div></footer>
+
+<script>
+(function(){
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const root = document.documentElement;
+const vw = () => innerWidth, vh = () => innerHeight;
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+
+/* ---------- leaves ---------- */
+const greens=['var(--leaf1)','var(--leaf2)','var(--leaf3)'];
+const leaves=[];
+['l','r'].forEach(side=>{
+  const host=document.getElementById(side==='l'?'fl':'fr');
+  const n=8;
+  for(let i=0;i<n;i++){
+    const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    s.setAttribute('viewBox','-60 -160 120 320');
+    const big = i%3!==1;
+    s.setAttribute('width',big?150:110); s.setAttribute('height',big?380:290);
+    const u=document.createElementNS('http://www.w3.org/2000/svg','use');
+    u.setAttribute('href',i%2?'#leafB':'#leafA');
+    s.appendChild(u);
+    s.style.color=greens[(i+(side==='r'?1:0))%3];
+    s.style.setProperty('--vein', i%3===0?'#d99a3d':'#c9a46a');
+    s.style.top=(-18+i*(118/n))+'%';
+    host.appendChild(s);
+    const dir = side==='l'?1:-1;
+    leaves.push({el:s,dir,base:dir*(62+((i*37)%40)),phase:i*1.7+(side==='r'?.9:0),depth:.6+((i*13)%5)/10});
+  }
+});
+
+/* ---------- village cards ---------- */
+const scenes=[
+ ['Keke','Street','#d99a3d','The yellow three-wheeler that knows every shortcut to the market.'],
+ ['Okada','Street','#b4552f','Motorcycle rides down red-earth roads, one hand on the driver.'],
+ ['Palm trees','Land','#3d6b3f','Palm wine in the morning, palm oil in the pot, shade at noon.'],
+ ['Village huts','Home','#a8774a','Mud walls and thatch around the family compound at dusk.'],
+ ['Ghana Must Go','Home','#c9a46a','The checkered bag that carried everything home and back.'],
+ ['Water jugs','Daily life','#b4552f','Women balancing the day’s water on their heads from the stream.'],
+ ['Rubber slippers','Childhood','#d99a3d','Children in slippers, dust and football until the light goes.'],
+ ['Masquerades','Ceremony','#3d6b3f','Dancers in raffia and masks who bring the ancestors to the street.'],
+ ['Traditional weddings','Ceremony','#c9a46a','Aso-oke, coral beads, gele, and two families made one.']
+];
+const track=document.getElementById('track');
+track.innerHTML=scenes.map(([t,g,c,d])=>`<article class="card"><div class="art" style="background:${c}">${t[0]}</div><div class="txt"><span class="tag">${g}</span><h3>${t}</h3><p>${d}</p></div></article>`).join('');
+
+/* ---------- lede words ---------- */
+const lede=document.getElementById('lede');
+const hlWords=new Set(['village','1960s','highlife.','ancestors,','roots.']);
+lede.innerHTML=lede.textContent.trim().split(/\s+/).map(w=>`<span class="w${hlWords.has(w.toLowerCase())?' hl':''}">${w}</span>`).join(' ');
+const words=[...lede.querySelectorAll('.w')];
+
+/* ---------- eq ---------- */
+const eq=document.getElementById('eq');
+for(let i=0;i<16;i++)eq.appendChild(document.createElement('i'));
+const bars=[...eq.children];
+
+/* ---------- waves ---------- */
+const waves=[document.querySelector('#wave1 polyline'),document.querySelector('#wave2 polyline')];
+
+/* ---------- scroll loop ---------- */
+const hero=document.getElementById('hero'),logo=document.getElementById('logo'),ring=document.getElementById('ring');
+const village=document.getElementById('village'),vinyl=document.getElementById('vinyl'),drumset=document.getElementById('drumset');
+let lastY=scrollY,vel=0,t0=performance.now(),pulsed=false;
+
+function frame(now){
+  const y=scrollY, H=document.documentElement.scrollHeight-vh();
+  const p=clamp(y/Math.max(1,H));
+  root.style.setProperty('--p',p.toFixed(4));
+  vel+= (Math.abs(y-lastY)-vel)*.15; lastY=y;
+  const t=(now-t0)/1000;
+
+  // hero progress: leaves part, logo settles
+  const h=reduce?1:clamp(y/(hero.offsetHeight-vh()));
+  const small=vw()<700;
+  const reach=(small?.07:.16)*vw();
+  leaves.forEach(L=>{
+    const sway=reduce?0:Math.sin(t*.7+L.phase+y*.004)*(5+Math.min(vel,40)*.25);
+    const open=(1-h);
+    const x=L.dir*(reach*open*L.depth - (small?40:0));
+    const rot=L.base*(1-.35*h)+sway+L.dir*h*-20;
+    const sc=(small?.55:1)*(1.12-.22*h)*L.depth*1.15;
+    L.el.style.transform=`translateX(${x}px) rotate(${rot}deg) scale(${sc})`;
+  });
+  if(!reduce){
+    logo.style.transform=`scale(${1-.12*h}) translateY(${-h*20}px)`;
+    ring.style.transform=`rotate(${y*.12}deg)`;
+  }
+
+  // lede word reveal
+  const r=lede.getBoundingClientRect();
+  const lp=clamp((vh()*.85-r.top)/(r.height+vh()*.35));
+  const lit=Math.round(lp*words.length);
+  words.forEach((w,i)=>w.classList.toggle('on',i<lit));
+
+  // village horizontal track
+  if(!reduce){
+    const vr=village.getBoundingClientRect();
+    const vp=clamp(-vr.top/(vr.height-vh()));
+    const dist=Math.max(0,track.scrollWidth-vw()+32);
+    track.style.transform=`translateX(${-dist*vp}px)`;
+  }
+
+  // vinyl + eq
+  if(!reduce) vinyl.style.transform=`rotate(${y*.35}deg)`;
+  const energy=Math.min(1,vel/30);
+  bars.forEach((b,i)=>{b.style.height=(18+Math.abs(Math.sin(t*3+i*.9+y*.01))*(30+energy*52))+'%'});
+
+  // drum waves react to scroll speed
+  waves.forEach((pl,k)=>{
+    let pts=[];const amp=4+Math.min(vel,60)*.5;
+    for(let x=0;x<=600;x+=10){
+      const env=Math.sin(Math.PI*x/600);
+      pts.push(x+','+(35+Math.sin(x*.06+t*(k?5:7)+y*.02)*amp*env*Math.sin(x*.013+t)).toFixed(1));
+    }
+    pl.setAttribute('points',pts.join(' '));
+  });
+
+  // drums pulse once when they come into view
+  if(!pulsed){const dr=drumset.getBoundingClientRect();if(dr.top<vh()*.7){drumset.classList.add('pulse');pulsed=true;}}
+
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ---------- tickets ---------- */
+const tiers=[
+ {id:'early',name:'Early Bird',price:45,c:'#3d6b3f',inc:'General admission for the first week of sales only.',badge:'First week only'},
+ {id:'general',name:'General Admission',price:65,c:'#d99a3d',inc:'Full conference access for non-delegates.',badge:'Individual'},
+ {id:'delegate',name:'School Delegate',price:80,c:'#b4552f',inc:'Conference access plus delegate merch and party entry (final perks being confirmed).',badge:'Capped per school'}
+];
+const qty={};
+const list=document.getElementById('tixlist');
+list.innerHTML=tiers.map(t=>`<article class="tix" style="--c:${t.c}">
+  <div><h3>${t.name}</h3><p class="inc">${t.inc}</p><span class="badge">${t.badge}</span></div>
+  <div class="right"><span class="price">$${t.price}</span>
+   <div class="step"><button type="button" data-t="${t.id}" data-s="-1" aria-label="Remove one ${t.name} ticket">−</button>
+   <input id="q-${t.id}" type="number" min="0" max="20" value="0" inputmode="numeric" aria-label="${t.name} quantity">
+   <button type="button" data-t="${t.id}" data-s="1" aria-label="Add one ${t.name} ticket">+</button></div></div>
+ </article>`).join('');
+tiers.forEach(t=>qty[t.id]=0);
+const lines=document.getElementById('lines'),totalEl=document.getElementById('total'),co=document.getElementById('checkout'),pn=document.getElementById('paynote');
+function renderOrder(){
+  let sum=0,html='';
+  tiers.forEach(t=>{const q=qty[t.id];document.getElementById('q-'+t.id).value=q;if(q){sum+=q*t.price;html+=`<li><span>${q} × ${t.name}</span><span>$${q*t.price}</span></li>`}});
+  lines.innerHTML=html||'<li class="empty">No tickets yet. Add one to start.</li>';
+  totalEl.textContent='$'+sum;co.disabled=!sum;
+  pn.textContent='Delegate caps apply per school.';
+}
+list.addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(!b)return;
+  qty[b.dataset.t]=clamp(qty[b.dataset.t]+ +b.dataset.s,0,20);renderOrder();});
+list.addEventListener('change',e=>{if(!e.target.id.startsWith('q-'))return;
+  qty[e.target.id.slice(2)]=clamp(Math.round(+e.target.value||0),0,20);renderOrder();});
+co.addEventListener('click',()=>{pn.textContent='Prototype only: this button would open the payment page (for example Stripe or Eventbrite) with this order.';});
+renderOrder();
+
+/* ---------- drum sounds (synthesized) ---------- */
+let ctx;
+function ac(){if(!ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ctx=new C();}if(ctx.state==='suspended')ctx.resume();return ctx;}
+function tone(type,f0,f1,tBend,dur,vol,when=0){
+  const c=ac();if(!c)return;const t=c.currentTime+when;
+  const o=c.createOscillator(),g=c.createGain();o.type=type;
+  o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+tBend);
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+.05);
+}
+function noise(dur,vol,when=0,freq=1800){
+  const c=ac();if(!c)return;const t=c.currentTime+when;
+  const b=c.createBuffer(1,c.sampleRate*dur,c.sampleRate),d=b.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);
+  const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();
+  f.type='bandpass';f.frequency.value=freq;g.gain.value=vol;s.buffer=b;s.connect(f).connect(g).connect(c.destination);s.start(t);
+}
+const sounds={
+  gangan:(w=0,hi=false)=>{tone('triangle',hi?260:190,hi?380:300,.07,.42,.55,w);tone('sine',hi?380:300,140,.38,.42,.0001+.25,w+.07);noise(.05,.25,w,2400)},
+  udu:(w=0)=>{tone('sine',80,190,.22,.5,.75,w);noise(.03,.1,w,600)},
+  ekwe:(w=0,hi=false)=>{tone('triangle',hi?820:640,hi?760:600,.06,.14,.45,w);tone('square',hi?1640:1280,hi?1500:1200,.03,.05,.06,w)}
+};
+document.querySelectorAll('.drum').forEach(b=>{
+  b.addEventListener('click',()=>{
+    sounds[b.dataset.d]();
+    b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit');
+  });
+});
+// 12/8-feel pattern
+const pat=[['gangan',0,0],['ekwe',.25,1],['udu',.5,0],['ekwe',.75,0],['gangan',1,1],['ekwe',1.25,1],['udu',1.5,0],['gangan',1.75,0]];
+let loop=null;const playBtn=document.getElementById('play'),rs=document.getElementById('rstatus');
+function bar(){pat.forEach(([d,w,hi])=>{sounds[d](w*.6,!!hi);
+  setTimeout(()=>{const el=document.querySelector(`.drum[data-d="${d}"]`);el.classList.remove('hit');void el.offsetWidth;el.classList.add('hit')},w*600);});}
+playBtn.addEventListener('click',()=>{
+  if(loop){clearInterval(loop);loop=null;playBtn.textContent='Play a rhythm';rs.textContent='Stopped.';return;}
+  if(!ac()){rs.textContent='This browser does not support Web Audio.';return;}
+  bar();loop=setInterval(bar,1200);playBtn.textContent='Stop';rs.textContent='Playing gángan, ụdụ and ekwe together.';
+});
+})();
+</script>
+</body>
+</html>
