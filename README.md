@@ -1,6 +1,6 @@
 # NSCC 2026 · Back to the Roots
 
-Website prototype for the **Nigerian Students Coalition Conference (NSCC) 2026**, hosted by the Nigerian Students Association at San José State University with Stanford.
+Website prototype for the **Nigerian Students Coalition Conference (NSCC) 2026**, hosted by the Nigerian Students Association at Stanford and San José State University.
 
 Theme: **Back to the Roots: An Ancestral Tribute**, celebrating Nigerian heritage through village life, cultural traditions and 1960s highlife.
 
